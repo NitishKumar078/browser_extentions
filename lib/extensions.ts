@@ -11,6 +11,8 @@ export const extensions: Extension[] = [
   // ── 1. Tab Harbor ──────────────────────────────────────────────────────────
   {
     slug: 'tab-harbor',
+    browsers: ['chrome', 'edge'],
+    edgeStoreUrl: null,
     name: 'Tab Harbor',
     tagline: 'Organize your tabs into focused workspaces',
     description:
@@ -111,6 +113,8 @@ export const extensions: Extension[] = [
   // ── 2. Focus Lane ──────────────────────────────────────────────────────────
   {
     slug: 'focus-lane',
+    browsers: ['chrome', 'edge'],
+    edgeStoreUrl: null,
     name: 'Focus Lane',
     tagline: 'Block distractions and protect your deep work time',
     description:
@@ -205,6 +209,8 @@ export const extensions: Extension[] = [
   // ── 3. Clipnote ────────────────────────────────────────────────────────────
   {
     slug: 'clipnote',
+    browsers: ['chrome'],
+    edgeStoreUrl: null,
     name: 'Clipnote',
     tagline: 'Capture text snippets from any page, instantly',
     description:
@@ -303,6 +309,8 @@ export const extensions: Extension[] = [
   // ── 4. Palette Pocket ──────────────────────────────────────────────────────
   {
     slug: 'palette-pocket',
+    browsers: ['chrome', 'edge'],
+    edgeStoreUrl: null,
     name: 'Palette Pocket',
     tagline: 'Pick and save colors from any website',
     description:
@@ -397,6 +405,8 @@ export const extensions: Extension[] = [
   // ── 5. Readwise View ───────────────────────────────────────────────────────
   {
     slug: 'readwise-view',
+    browsers: ['chrome', 'edge'],
+    edgeStoreUrl: null,
     name: 'Readwise View',
     tagline: 'Distraction-free reading mode for any article',
     description:
@@ -493,6 +503,8 @@ export const extensions: Extension[] = [
   // ── 6. Link Sweep ──────────────────────────────────────────────────────────
   {
     slug: 'link-sweep',
+    browsers: ['edge'],
+    edgeStoreUrl: null,
     name: 'Link Sweep',
     tagline: 'Tidy your saved links into useful collections',
     description:

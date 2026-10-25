@@ -61,6 +61,8 @@ export interface Extension {
 
   // Links — use null when not configured
   storeUrl: string | null;
+  edgeStoreUrl: string | null;
+  browsers: ('chrome' | 'edge')[];
   supportUrl: string | null;
   privacyPolicyUrl: string | null;
 

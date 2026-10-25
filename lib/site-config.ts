@@ -5,7 +5,7 @@ export const siteConfig = {
   shortName: 'Nish',
   tagline: 'Useful browser tools by an independent developer',
   description:
-    'A collection of focused Chrome extensions built by Nitish Kumar — tools for productivity, reading, design, and browsing.',
+    'Small tools for better browsing. Explore Chrome extensions and Microsoft Edge add-ons by Nitish Kumar.',
   url: 'https://extensions.nishkumar.dev', // update when deployed
   portfolioUrl: 'https://www.nishkumar.dev',
   demosUrl: 'https://www.demos.nishkumar.dev',
@@ -20,8 +20,8 @@ export const siteConfig = {
   },
   nav: [
     { label: 'Extensions', href: '/#extensions' },
-    { label: 'About', href: '/about' },
-    { label: 'Support', href: '/support' },
+    { label: 'The maker', href: '/#about' },
+    { label: 'FAQs', href: '/#faq' },
   ],
 } as const;
 

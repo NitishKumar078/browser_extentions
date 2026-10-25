@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
     default: siteConfig.name,
-    template: `%s — ${siteConfig.name}`,
+    template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.description,
   openGraph: {
@@ -46,7 +46,7 @@ export default function RootLayout({
       <body>
         <a
           href="#main-content"
-          className="fixed top-4 left-4 z-[100] bg-[var(--color-cobalt)] text-white px-4 py-2 rounded text-sm font-semibold -translate-y-20 focus:translate-y-0 transition-transform"
+          className="skip-link"
         >
           Skip to main content
         </a>

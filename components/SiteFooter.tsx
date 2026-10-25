@@ -26,6 +26,7 @@ export default function SiteFooter() {
               {link.label}
             </Link>
           ))}
+          <Link href="/privacy">Privacy Policy</Link>
         </div>
         <div className="footer-links">
           <span>Elsewhere on the web</span>
@@ -52,6 +53,7 @@ export default function SiteFooter() {
       </div>
       <div className="container-site footer-bottom">
         <span>&copy; 2026 {siteConfig.author.name}</span>
+        <Link href="/privacy">Privacy Policy</Link>
         <span>Independent by design. Useful by intention.</span>
         <a href="#main-content">Back to top &uarr;</a>
       </div>

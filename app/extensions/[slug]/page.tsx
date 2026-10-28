@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { siteConfig } from '@/lib/site-config';
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowUpRight, Check, ShieldCheck } from "lucide-react";
@@ -6,11 +7,14 @@ import {
   extensions,
   getExtensionBySlug,
   getRelatedExtensions,
+  extensionStatusLabels,
 } from "@/lib/extensions";
 import { BrowserBadge, ExtensionIcon } from "@/components/ExtensionVisual";
 import ExtensionCard from "@/components/ExtensionCard";
 import ScreenshotGallery from "@/components/ScreenshotGallery";
 import StoreLinks from "@/components/StoreLinks";
+
+export const dynamicParams = false;
 
 export function generateStaticParams() {
   return extensions.map((extension) => ({ slug: extension.slug }));
@@ -25,8 +29,14 @@ export async function generateMetadata({
   if (!extension) return { title: "Extension not found" };
   return {
     title: extension.name,
-    description: extension.tagline,
+    description: extension.description,
     alternates: { canonical: `/extensions/${extension.slug}` },
+    openGraph: {
+      type: 'website', title: `${extension.name} | ${siteConfig.name}`,
+      description: extension.description, url: `${siteConfig.url}/extensions/${extension.slug}`,
+      images: extension.screenshots[0] ? [{ url: extension.screenshots[0].src, alt: extension.screenshots[0].alt }] : ['/opengraph-image'],
+    },
+    twitter: { card: 'summary_large_image', title: extension.name, description: extension.description, images: [extension.screenshots[0]?.src ?? '/opengraph-image'] },
   };
 }
 
@@ -50,6 +60,13 @@ export default async function ExtensionPage({
 
   return (
     <div className="container-site detail-page">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        '@context': 'https://schema.org', '@graph': [
+          { '@type': 'WebPage', name: extension.name, url: `${siteConfig.url}/extensions/${extension.slug}`, description: extension.description,
+            about: { '@type': 'SoftwareApplication', name: extension.name, applicationCategory: 'BrowserApplication', operatingSystem: extension.browsers.map(browser => browser === 'edge' ? 'Microsoft Edge' : 'Google Chrome').join(', '), description: extension.description, creativeWorkStatus: extensionStatusLabels[extension.status], author: { '@type': 'Person', '@id': `${siteConfig.portfolioUrl}/#person`, name: siteConfig.author.name } } },
+          { '@type': 'BreadcrumbList', itemListElement: [ { '@type': 'ListItem', position: 1, name: 'Extensions', item: `${siteConfig.url}/` }, { '@type': 'ListItem', position: 2, name: extension.name, item: `${siteConfig.url}/extensions/${extension.slug}` } ] },
+        ],
+      }).replace(/</g, '\\u003c') }} />
       <Link href="/#extensions" className="breadcrumb">
         <ArrowLeft size={16} /> All extensions
       </Link>
@@ -60,9 +77,9 @@ export default async function ExtensionPage({
             <div>
               <span className="eyebrow">
                 {extension.category}
-                {extension.isSample && (
-                  <span className="sample-label">Sample concept</span>
-                )}
+                <span className={`release-badge status-${extension.status}`}>
+                  {extensionStatusLabels[extension.status]}
+                </span>
               </span>
               <h1>{extension.name}</h1>
             </div>
@@ -72,16 +89,22 @@ export default async function ExtensionPage({
             {extension.browsers.map((browser) => (
               <BrowserBadge browser={browser} key={browser} />
             ))}
-            <span className="price-label">
-              {extension.pricing || "See store for pricing"}
-            </span>
+            {extension.pricing && (
+              <span className="price-label">{extension.pricing}</span>
+            )}
           </div>
         </div>
         <div>
-          {extension.isSample && (
-            <p className="detail-sample">
-              This is a fictional preview, not a published extension. Product
-              details and screens are illustrative.
+          {extension.status === "in-review" && (
+            <p className="release-notice">
+              Store verification is in progress. Installation links will be
+              added after approval and publication.
+            </p>
+          )}
+          {extension.status === "coming-soon" && (
+            <p className="release-notice">
+              Not yet published. These screenshots show the development build.
+              Store installation will be available after release.
             </p>
           )}
           <StoreLinks extension={extension} />
@@ -104,7 +127,12 @@ export default async function ExtensionPage({
             </div>
           </section>
           <section className="detail-section">
-            <h2>From installed to in your flow.</h2>
+            <h2>
+              {extension.status === "coming-soon" ||
+              extension.status === "in-review"
+                ? "Inside the development build."
+                : "From installed to in your flow."}
+            </h2>
             <ol className="step-list">
               {extension.gettingStarted.map((step) => (
                 <li key={step.step}>
@@ -119,11 +147,7 @@ export default async function ExtensionPage({
           </section>
           {!!extension.changelog?.length && (
             <section className="detail-section">
-              <h2>
-                {extension.isSample
-                  ? "Sample release notes"
-                  : "What\u0027s new"}
-              </h2>
+              <h2>What&apos;s new</h2>
               {extension.changelog.map((release) => (
                 <article key={release.version} className="release-entry">
                   <div>
@@ -162,7 +186,7 @@ export default async function ExtensionPage({
           <h2>At a glance</h2>
           <dl>
             <div>
-              <dt>Version</dt>
+              <dt>Project version</dt>
               <dd>{extension.version || "Not specified"}</dd>
             </div>
             {extension.updatedAt && (
@@ -177,11 +201,7 @@ export default async function ExtensionPage({
             </div>
             <div>
               <dt>Status</dt>
-              <dd>
-                {extension.isSample
-                  ? "Sample concept"
-                  : extension.status.replace("-", " ")}
-              </dd>
+              <dd>{extensionStatusLabels[extension.status]}</dd>
             </div>
           </dl>
           <ShieldCheck size={23} />
@@ -197,12 +217,10 @@ export default async function ExtensionPage({
               ))}
             </ul>
           )}
-          {extension.isSample && (
-            <p>
-              Sample permissions only. Review the official store listing before
-              installing a real extension.
-            </p>
-          )}
+          <p>
+            Details reflect the current project. Review the official store
+            listing before installing a published version.
+          </p>
           {extension.privacyPolicyUrl && (
             <a
               className="text-link"

@@ -7,8 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test:ui": "playwright test",
-    "previews": "node scripts/generate-previews.cjs"
+    "test:ui": "playwright test"
   },
   "dependencies": {
     "lucide-react": "^1.61.0",

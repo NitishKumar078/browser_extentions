@@ -19,25 +19,25 @@ npm run build
 npm start
 ```
 
-## Replace sample products
+## Current projects and future releases
 
-All six current extensions are fictional concepts. Versions, release notes, permissions, pricing, and previews are sample content. No invented ratings or install counts are displayed. Sample listings cannot link to an installation.
+The collection contains Text Extractor (In review, undergoing store verification) and Pure Anime (unpublished, Coming soon). Neither has installation links enabled. Copy, permissions, versions, icons, and screenshots come from their local project documentation and assets. Project versions may differ from eventual store releases. No pricing, ratings, install counts, or release dates have been invented.
 
 Edit `lib/extensions.ts`. Each entry drives its card, detail page, features, screenshots, release notes, FAQs, and related products.
 
-1. Replace `slug`, `name`, `tagline`, `description`, `category`, and `tags`.
+1. Add an entry with a unique `slug`, `name`, `tagline`, `description`, `category`, and `tags`.
 2. Put real PNG/WebP icons and screenshots in `public/extensions/your-slug/`.
 3. Set `icon` and `screenshots[].src` to public paths such as `/extensions/your-slug/icon.png`. Add accurate alternative text and captions.
 4. Set `browsers` to `['chrome']`, `['edge']`, or `['chrome', 'edge']`.
 5. Set `storeUrl` to the Chrome Web Store listing and `edgeStoreUrl` to the Microsoft Edge Add-ons listing. Use `null` for missing links, never `#`.
 6. Replace `privacySummary`, `permissions`, `privacyPolicyUrl`, and `supportUrl` with verified information.
 7. Update `version`, `updatedAt`, `pricing`, `features`, `gettingStarted`, `changelog`, and `faqs`.
-8. Set `isSample: false` only when the listing contains real information. Install links require a real listing, available/beta status, and configured store URL.
+8. Use `status: 'coming-soon'` for development projects and `status: 'in-review'` during store verification. After publication, set `status: 'available'` and add the real store links. Install links require an `available` or `beta` status and a configured store URL; adding a URL alone does not enable installation for a project awaiting release.
 9. Keep one entry `featured: true`. Update `relatedSlugs` to valid product slugs.
 
-Tab Harbor has tailored introductory copy and a live illustrative workspace switch in `components/FeaturedExtension.tsx`. Other featured products use their own tagline, description, and screenshot.
+The featured section automatically uses the selected product's name, tagline, description, first screenshot, and features.
 
-Global FAQ and maker copy live in `app/page.tsx`. Update the sample-installation explanation before launch. The collection disclaimer disappears automatically when no sample products remain.
+Global FAQ and maker copy live in `app/page.tsx`. Update the store-link explanation when Text Extractor's listing URLs are supplied. Verify the published version's features against the project documentation before promoting a release.
 
 ## Branding and links
 
@@ -46,12 +46,14 @@ Global FAQ and maker copy live in `app/page.tsx`. Update the sample-installation
 - `app/layout.tsx`: metadata and font.
 - `app/opengraph-image.tsx`: generated social-preview artwork.
 - `app/icon.svg`: browser icon.
-- `components/ExtensionVisual.tsx`: sample artwork and icon fallbacks.
+- `components/ExtensionVisual.tsx`: actual product imagery and browser badges.
 
 Portfolio: https://www.nishkumar.dev
 Demo Lab: https://www.demos.nishkumar.dev
 
-The configured production URL, https://extensions.nishkumar.dev, is a placeholder until you connect that domain. Set `siteConfig.url` to the actual deployment URL.
+The canonical production URL is https://www.extensions.nishkumar.dev. The Next.js configuration permanently redirects the non-www hostname to this address while preserving the path and query. Keep both hostnames connected to this hosting project with valid HTTPS certificates.
+
+The site generates `/sitemap.xml`, `/robots.txt`, individual canonical URLs, social metadata, and structured data from the real extension catalog. Unknown extension slugs return 404. Submit `https://www.extensions.nishkumar.dev/sitemap.xml` in Google Search Console after deploying. Indexing and rankings are not guaranteed.
 
 ## Browser checks
 
@@ -67,19 +69,17 @@ $env:PLAYWRIGHT_CHANNEL = 'msedge'
 npm run test:ui
 ```
 
-Tests cover all seven pages at 360, 768, 1024, 1440, and 1920 pixels; filtering/sorting; empty-state recovery; mobile navigation; FAQs; galleries; direct routes and refreshes; missing pages; external links; reduced motion; and social metadata.
+Tests cover the collection and each product page at 360, 768, 1024, 1440, and 1920 pixels; filtering/sorting; empty-state recovery; mobile navigation; FAQs; galleries; direct routes and refreshes; missing pages; external links; reduced motion; and social metadata. Regression checks confirm the six former dummy routes return 404 and Pure Anime has no installation links.
 
 Tests start a server automatically or reuse port 3000. Screenshots and traces are in the ignored `test-results/` directory.
 
-## Sample graphics
+When another project occupies port 3000, set `$env:PLAYWRIGHT_PORT = '3002'` before running tests to target the showcase on that port instead.
 
-PNGs in `public/extensions/` come from this project's code-native illustrative screens, not real published products. To regenerate, keep the development server running on port 3000 and run:
+## Product assets
 
-```sh
-npm run previews
-```
+Active assets are in `public/extensions/text-extractor/` and `public/extensions/pure-anime/`. Text Extractor uses its existing marketing overview and real workbench/OCR captures. Pure Anime uses development-build screenshots with test site data. Source projects were not modified. The sample-preview generator has been removed.
 
-The generator uses Node 24's TypeScript loading and Playwright. It only writes images for entries with `isSample: true`. Replace these assets with real screenshots before publishing real listings.
+Text Extractor's existing privacy HTML is served at `/extensions/text-extractor/privacy.html`. Pure Anime's policy remains a draft in its source project and is not presented here as a finalized policy.
 
 ## Deploy
 

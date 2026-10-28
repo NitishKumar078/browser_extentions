@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import type { Extension } from "@/lib/types";
+import { extensionStatusLabels } from "@/lib/extensions";
 import { BrowserBadge, ExtensionIcon, ExtensionMedia } from "./ExtensionVisual";
 
 export default function ExtensionCard({ extension }: { extension: Extension }) {
@@ -27,8 +28,8 @@ export default function ExtensionCard({ extension }: { extension: Extension }) {
             </h3>
             <span>{extension.category}</span>
           </div>
-          <span className="price-label">
-            {extension.pricing || "See details"}
+          <span className={`release-badge status-${extension.status}`}>
+            {extensionStatusLabels[extension.status]}
           </span>
         </div>
         <p>{extension.tagline}.</p>

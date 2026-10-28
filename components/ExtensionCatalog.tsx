@@ -148,13 +148,6 @@ export default function ExtensionCatalog({
           </button>
         </div>
       )}
-      {extensions.some((item) => item.isSample) && (
-        <p className="sample-note">
-          <span className="sample-dot" /> Preview collection: sample products
-          and concept screens. Store links will appear when real releases are
-          added.
-        </p>
-      )}
     </section>
   );
 }

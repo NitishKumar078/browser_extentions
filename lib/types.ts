@@ -1,17 +1,18 @@
 // Extension data model — centralized types for the entire site
 
 export type ExtensionCategory =
-  | 'Productivity'
-  | 'Writing'
-  | 'Developer Tools'
-  | 'Browsing'
-  | 'Design'
-  | 'Reading';
+  | "Productivity"
+  | "Writing"
+  | "Developer Tools"
+  | "Browsing"
+  | "Design"
+  | "Reading";
 
-export type ExtensionStatus = 'available' | 'coming-soon' | 'beta' | 'discontinued';
+export type ExtensionStatus =
+  "available" | "in-review" | "coming-soon" | "beta" | "discontinued";
 
 export interface Screenshot {
-  src: string;          // path relative to /public
+  src: string; // path relative to /public
   alt: string;
   caption?: string;
 }
@@ -30,7 +31,7 @@ export interface GettingStartedStep {
 
 export interface ChangelogEntry {
   version: string;
-  date: string;          // ISO date string YYYY-MM-DD
+  date: string; // ISO date string YYYY-MM-DD
   changes: string[];
 }
 
@@ -49,8 +50,8 @@ export interface Extension {
   tags: string[];
 
   // Branding
-  icon: string;           // path relative to /public, e.g. /extensions/tab-harbor/icon.png
-  accentColor: string;    // CSS color string
+  icon: string; // path relative to /public, e.g. /extensions/text-extractor/icon.png
+  accentColor: string; // CSS color string
 
   // Media
   screenshots: Screenshot[];
@@ -62,20 +63,19 @@ export interface Extension {
   // Links — use null when not configured
   storeUrl: string | null;
   edgeStoreUrl: string | null;
-  browsers: ('chrome' | 'edge')[];
+  browsers: ("chrome" | "edge")[];
   supportUrl: string | null;
   privacyPolicyUrl: string | null;
 
   // Status
   status: ExtensionStatus;
   featured: boolean;
-  isSample: boolean;      // true = fictional sample content
 
   // Optional metadata — omit or null when unknown
   version?: string;
-  updatedAt?: string;     // ISO date string
-  pricing?: string;       // e.g. "Free", "Free + Pro ($4.99/mo)"
-  rating?: number;        // only for real, published extensions
+  updatedAt?: string; // ISO date string
+  pricing?: string; // e.g. "Free", "Free + Pro ($4.99/mo)"
+  rating?: number; // only for real, published extensions
   ratingCount?: number;
   userCount?: number;
 

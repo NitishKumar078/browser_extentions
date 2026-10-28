@@ -14,10 +14,12 @@ import {
 import { siteConfig } from "@/lib/site-config";
 
 export const metadata: Metadata = {
-  title: `Privacy Policy | ${siteConfig.name}`,
+  title: 'Privacy Policy',
   description:
-    "Privacy policy for browser extensions by Nitish Kumar. We collect zero data, track no browsing activity, and run 100% locally in your browser.",
+    "Read the privacy policy and product-specific privacy information for browser extensions by Nitish Kumar.",
   alternates: { canonical: "/privacy" },
+  openGraph: { title: 'Privacy Policy | Nish Extensions', description: 'Privacy information for browser extensions by Nitish Kumar.', url: `${siteConfig.url}/privacy` },
+  twitter: { card: 'summary_large_image', title: 'Privacy Policy | Nish Extensions', description: 'Privacy information for browser extensions by Nitish Kumar.', images: ['/opengraph-image'] },
 };
 
 export default function PrivacyPage() {

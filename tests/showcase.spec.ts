@@ -1,5 +1,23 @@
 import { test, expect } from "@playwright/test";
 import { extensions } from "../lib/extensions";
+import { siteConfig } from '../lib/site-config';
+
+test('canonical URLs, product previews, sitemap, and host redirects match the public domain', async ({ page, request }) => {
+  for (const extension of extensions) {
+    await page.goto(`/extensions/${extension.slug}`);
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', `${siteConfig.url}/extensions/${extension.slug}`);
+    await expect(page.locator('meta[property="og:url"]')).toHaveAttribute('content', `${siteConfig.url}/extensions/${extension.slug}`);
+    await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', extension.description);
+  }
+  const sitemap = await request.get('/sitemap.xml');
+  expect(sitemap.status()).toBe(200);
+  const xml = await sitemap.text();
+  for (const extension of extensions) expect(xml).toContain(`${siteConfig.url}/extensions/${extension.slug}`);
+  expect(await (await request.get('/robots.txt')).text()).toContain(`${siteConfig.url}/sitemap.xml`);
+  const redirect = await request.get('/extensions/text-extractor?ref=portfolio', { headers: { host: 'extensions.nishkumar.dev' }, maxRedirects: 0 });
+  expect(redirect.status()).toBe(308);
+  expect(redirect.headers().location).toBe(`${siteConfig.url}/extensions/text-extractor?ref=portfolio`);
+});
 
 for (const width of [360, 768, 1024, 1440, 1920]) {
   test(`all pages fit at ${width}px`, async ({ page }) => {
@@ -45,7 +63,7 @@ for (const width of [360, 768, 1024, 1440, 1920]) {
       ).toBeGreaterThan(25);
       if (
         (width === 360 || width === 1440) &&
-        (route === "/" || route.endsWith("tab-harbor"))
+        (route === "/" || route.endsWith("text-extractor"))
       ) {
         await page.screenshot({
           path: `test-results/${route === "/" ? "collection" : "detail"}-${width}.png`,
@@ -62,60 +80,66 @@ test("search, category, browser, sorting, and empty state work together", async 
 }) => {
   await page.goto("/");
   const cards = page.locator("#extensions .extension-card");
-  await expect(cards).toHaveCount(6);
+  await expect(cards).toHaveCount(extensions.length);
   await page.getByRole("button", { name: "Productivity", exact: true }).click();
-  await expect(cards).toHaveCount(2);
+  await expect(cards).toHaveCount(1);
   await page.getByRole("button", { name: "All tools" }).click();
   await page
     .getByRole("combobox", { name: "Browser", exact: true })
     .selectOption("edge");
-  await expect(cards).toHaveCount(5);
+  await expect(cards).toHaveCount(
+    extensions.filter((item) => item.browsers.includes("edge")).length,
+  );
   await page
     .getByRole("searchbox", { name: "Search extensions" })
-    .fill("  palette  ");
+    .fill("  extractor  ");
   await expect(cards).toHaveCount(1);
-  await expect(cards.first()).toContainText("Palette Pocket");
+  await expect(cards.first()).toContainText("Text Extractor");
   await page.getByRole("searchbox").fill("not-an-extension");
   await expect(
     page.getByRole("heading", { name: "No tools match just yet." }),
   ).toBeVisible();
   await page.getByRole("button", { name: "Clear filters" }).click();
-  await expect(cards).toHaveCount(6);
+  await expect(cards).toHaveCount(extensions.length);
   await page
     .getByRole("combobox", { name: "Sort extensions" })
     .selectOption("name");
-  await expect(cards.first()).toContainText("Clipnote");
+  await expect(cards.first()).toContainText("Pure Anime");
   await page
     .getByRole("combobox", { name: "Sort extensions" })
     .selectOption("updated");
-  await expect(cards.first()).toContainText("Readwise View");
+  await expect(cards.first()).toContainText("Text Extractor");
 });
 
 test("preview, detail gallery, FAQ, and direct navigation work", async ({
   page,
 }) => {
   await page.goto("/");
-  await page.getByRole("button", { name: "Reading list", exact: true }).click();
-  await expect(page.locator(".featured-visual")).toContainText(
-    "A little inspiration",
-  );
   await page
-    .getByRole("link", { name: "Explore Tab Harbor", exact: true })
+    .getByRole("link", { name: "Explore Text Extractor", exact: true })
     .first()
     .click();
-  await expect(page).toHaveURL(/extensions\/tab-harbor/);
+  await expect(page).toHaveURL(/extensions\/text-extractor/);
   await page.getByRole("button", { name: "Next screenshot" }).click();
-  await expect(page.locator("figcaption")).toContainText("2 of 2");
+  await expect(page.locator("figcaption")).toContainText("2 / 3");
   await page.getByRole("button", { name: "Next screenshot" }).click();
-  await expect(page.locator("figcaption")).toContainText("1 of 2");
+  await expect(page.locator("figcaption")).toContainText("3 / 3");
+  await page.getByRole("button", { name: "Next screenshot" }).click();
+  await expect(page.locator("figcaption")).toContainText("1 / 3");
   await page.locator("summary").first().focus();
   await page.keyboard.press("Enter");
   await expect(page.locator("details").first()).toHaveAttribute("open", "");
-  await expect(page.locator(".store-actions a")).toHaveCount(0);
-  await expect(page.locator(".store-unavailable")).toHaveCount(2);
+  const product = extensions.find((item) => item.slug === "text-extractor")!;
+  const configuredStores = [product.storeUrl, product.edgeStoreUrl].filter(
+    Boolean,
+  ).length;
+  await expect(page.locator(".store-actions a")).toHaveCount(configuredStores);
+  await expect(page.locator(".store-unavailable")).toHaveCount(
+    product.browsers.length - configuredStores,
+  );
   await page.reload();
   await expect(
-    page.getByRole("heading", { name: "Tab Harbor", exact: true }),
+    page.getByRole("heading", { name: "Text Extractor", exact: true }),
   ).toBeVisible();
   await page.getByRole("link", { name: "All extensions", exact: true }).click();
   await expect(page.locator("#extensions")).toBeInViewport();
@@ -170,7 +194,7 @@ test("external destinations, reduced motion, and metadata are correct", async ({
   await expect(
     page.locator('header a[href="https://www.demos.nishkumar.dev"]'),
   ).toBeVisible();
-  await expect(page).toHaveTitle("Nish / Extensions");
+  await expect(page).toHaveTitle("Chrome Extensions & Edge Add-ons by Nitish Kumar");
   expect(
     await page.evaluate(
       () => getComputedStyle(document.documentElement).scrollBehavior,
@@ -179,4 +203,60 @@ test("external destinations, reduced motion, and metadata are correct", async ({
   const preview = await page.request.get("/opengraph-image");
   expect(preview.status()).toBe(200);
   expect(preview.headers()["content-type"]).toContain("image/png");
+});
+
+test("only real projects remain, and unpublished projects cannot be installed", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await expect(page.locator("#extensions .extension-card")).toHaveCount(2);
+  await expect(page.locator("#extensions")).toContainText("Text Extractor");
+  await expect(page.locator("#extensions")).toContainText("Pure Anime");
+  await expect(page.locator(".featured-content .release-badge")).toHaveText(
+    "In review",
+  );
+  await expect(page.locator("#extensions")).not.toContainText("fictional");
+  for (const name of [
+    "Tab Harbor",
+    "Focus Lane",
+    "Clipnote",
+    "Palette Pocket",
+    "Readwise View",
+    "Link Sweep",
+  ]) {
+    await expect(page.getByRole("heading", { name, exact: true })).toHaveCount(
+      0,
+    );
+  }
+  await page.goto("/extensions/text-extractor");
+  await expect(page.locator(".release-notice")).toContainText(
+    "Store verification is in progress",
+  );
+  await expect(page.locator(".store-actions a")).toHaveCount(0);
+  await expect(page.locator(".store-unavailable").first()).toContainText(
+    "Awaiting store approval",
+  );
+  await page.goto("/extensions/pure-anime");
+  await expect(page.locator(".release-notice")).toContainText(
+    "Not yet published",
+  );
+  await expect(page.locator(".store-actions a")).toHaveCount(0);
+  await expect(page.locator(".store-unavailable")).toContainText("Coming soon");
+  await page.getByRole("button", { name: "Next screenshot" }).click();
+  await expect(page.locator("figcaption")).toContainText("2 / 2");
+  const policy = await page.request.get(
+    "/extensions/text-extractor/privacy.html",
+  );
+  expect(policy.status()).toBe(200);
+  expect(await policy.text()).toContain("Text Extractor privacy policy");
+  for (const slug of [
+    "tab-harbor",
+    "focus-lane",
+    "clipnote",
+    "palette-pocket",
+    "readwise-view",
+    "link-sweep",
+  ]) {
+    expect((await page.goto(`/extensions/${slug}`))?.status()).toBe(404);
+  }
 });

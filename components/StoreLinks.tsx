@@ -9,7 +9,6 @@ export default function StoreLinks({ extension }: { extension: Extension }) {
         const url =
           browser === "chrome" ? extension.storeUrl : extension.edgeStoreUrl;
         const canInstall =
-          !extension.isSample &&
           url &&
           (extension.status === "available" || extension.status === "beta");
         return canInstall ? (
@@ -29,11 +28,13 @@ export default function StoreLinks({ extension }: { extension: Extension }) {
           <div key={browser} className="store-unavailable">
             <BrowserBadge browser={browser} />
             <small>
-              {extension.isSample
-                ? "Sample - not published"
-                : extension.status === "discontinued"
-                  ? "No longer available"
-                  : "Store link coming soon"}
+              {extension.status === "coming-soon"
+                ? "Coming soon - not published"
+                : extension.status === "in-review"
+                  ? "Awaiting store approval"
+                  : extension.status === "discontinued"
+                    ? "No longer available"
+                    : "Store link pending"}
             </small>
           </div>
         );

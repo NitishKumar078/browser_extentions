@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import {
   ArrowDown,
   ArrowUpRight,
@@ -14,21 +15,23 @@ import ExtensionCatalog from "@/components/ExtensionCatalog";
 import FeaturedExtension from "@/components/FeaturedExtension";
 import { BrowserBadge } from "@/components/ExtensionVisual";
 
+export const metadata: Metadata = { alternates: { canonical: "/" } };
+
 const faqs = [
   {
     question: "Where can I install an extension?",
     answer:
-      "Each product page has separate Chrome Web Store and Microsoft Edge Add-ons links when a release is available. The current collection uses fictional sample products, so installation is not enabled yet.",
+      "Text Extractor is currently undergoing store verification, and Pure Anime is still in development. Neither is available to install from this collection yet. Official store links will be added after approval and publication.",
   },
   {
     question: "Will these work in both Chrome and Edge?",
     answer:
-      "Use the browser filter to find the right version. Each listing shows its supported browsers. When real releases are added, use the matching store link on the product page.",
+      "Text Extractor is shown for Chrome and Edge. The current Pure Anime development build targets Chrome. Use the matching official store listing when available, and review its compatibility requirements before installing.",
   },
   {
     question: "What can an extension access?",
     answer:
-      "Permissions are listed on each product page alongside a privacy summary. Always review the permissions and privacy policy on the official store before installing. The current permission lists are sample content.",
+      "Each product page lists permissions from its project manifest and explains how data is handled. Website access is broad for these tools, so review the official store listing and privacy policy before installing. Development builds may differ from published versions.",
   },
   {
     question: "Have an idea or need a custom extension?",
@@ -41,33 +44,62 @@ export default function Home() {
   const featured = getFeaturedExtension();
   return (
     <>
-      <section className="hero container-site">
-        <div className="hero-note">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "CollectionPage",
+            name: "Chrome Extensions & Edge Add-ons by Nitish Kumar",
+            url: `${siteConfig.url}/`,
+            description: siteConfig.description,
+            author: {
+              "@type": "Person",
+              "@id": `${siteConfig.portfolioUrl}/#person`,
+              name: siteConfig.author.name,
+              url: siteConfig.portfolioUrl,
+            },
+            mainEntity: {
+              "@type": "ItemList",
+              itemListElement: extensions.map((extension, index) => ({
+                "@type": "ListItem",
+                position: index + 1,
+                name: extension.name,
+                url: `${siteConfig.url}/extensions/${extension.slug}`,
+              })),
+            },
+          }).replace(/</g, "\\u003c"),
+        }}
+      />
+      <div className="hero-band">
+        <section className="hero container-site">
+          {/* <div className="hero-note">
           <span className="status-dot" /> Independent tools by{" "}
           {siteConfig.author.name}
-        </div>
-        <div className="hero-layout">
-          <h1>
-            Small tools.
-            <br />
-            Better browsing<span className="hero-period">.</span>
-          </h1>
-          <div className="hero-description">
-            <p>
-              A collection of thoughtful browser extensions for a more focused,
-              organized, and creative everyday.
-            </p>
-            <div className="hero-browser-line">
-              <BrowserBadge browser="chrome" />
-              <span className="plus-sign">+</span>
-              <BrowserBadge browser="edge" />
+        </div> */}
+          <div className="hero-layout">
+            <h1>
+              Small tools.
+              <br />
+              Better browsing<span className="hero-period">.</span>
+            </h1>
+            <div className="hero-description">
+              <p>
+                A collection of thoughtful browser extensions for a more
+                focused, organized, and creative everyday.
+              </p>
+              <div className="hero-browser-line">
+                <BrowserBadge browser="chrome" />
+                <span className="plus-sign">+</span>
+                <BrowserBadge browser="edge" />
+              </div>
+              <a href="#extensions" className="text-link">
+                Explore the collection <ArrowDown size={17} />
+              </a>
             </div>
-            <a href="#extensions" className="text-link">
-              Explore the collection <ArrowDown size={17} />
-            </a>
           </div>
-        </div>
-      </section>
+        </section>
+      </div>
       {featured && <FeaturedExtension extension={featured} />}
       <div className="principles-strip container-site">
         <span>
@@ -104,9 +136,9 @@ export default function Home() {
               that make a difference.
             </h2>
             <p>
-              Too many tabs. A color worth saving. An idea you don&apos;t want
-              to lose. I&apos;m interested in the small moments where a
-              well-made tool can make the web feel a little better.
+              A useful passage trapped in an image. A site worth coming back to.
+              I&apos;m interested in the small moments where a well-made tool
+              can make the web feel a little better.
             </p>
             <p>
               This is home for my browser projects. For the bigger picture, take

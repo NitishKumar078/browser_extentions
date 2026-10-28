@@ -6,7 +6,7 @@ export const siteConfig = {
   tagline: 'Useful browser tools by an independent developer',
   description:
     'Small tools for better browsing. Explore Chrome extensions and Microsoft Edge add-ons by Nitish Kumar.',
-  url: 'https://extensions.nishkumar.dev', // update when deployed
+  url: 'https://www.extensions.nishkumar.dev',
   portfolioUrl: 'https://www.nishkumar.dev',
   demosUrl: 'https://www.demos.nishkumar.dev',
   author: {

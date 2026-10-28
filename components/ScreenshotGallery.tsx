@@ -2,9 +2,8 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, ExternalLink } from "lucide-react";
 import type { Extension } from "@/lib/types";
-import { ProductPreview } from "./ExtensionVisual";
 
 export default function ScreenshotGallery({
   extension,
@@ -12,48 +11,54 @@ export default function ScreenshotGallery({
   extension: Extension;
 }) {
   const [index, setIndex] = useState(0);
-  const count = extension.isSample ? 2 : extension.screenshots.length;
+  const count = extension.screenshots.length;
   const screenshot = extension.screenshots[index];
-  if (!count) return null;
+  if (!screenshot) return null;
   return (
     <figure className="detail-gallery">
-      {extension.isSample ? (
-        <ProductPreview extension={extension} variant={index} />
-      ) : (
-        <div className="product-preview real-preview">
-          <Image
-            src={screenshot.src}
-            alt={screenshot.alt}
-            fill
-            sizes="(max-width: 799px) 95vw, 85vw"
-            priority
-          />
-        </div>
-      )}
+      <div className="product-preview real-preview">
+        <Image
+          src={screenshot.src}
+          alt={screenshot.alt}
+          fill
+          sizes="(max-width: 799px) 95vw, 1240px"
+          priority
+        />
+      </div>
       <figcaption className="gallery-controls">
         <span aria-live="polite">
-          {extension.isSample
-            ? `Illustrative concept ${index + 1} of ${count}`
-            : `${index + 1} / ${count} - ${screenshot.caption || extension.name}`}
+          {index + 1} / {count} - {screenshot.caption || extension.name}
         </span>
-        {count > 1 && (
-          <div>
-            <button
-              className="icon-button"
-              aria-label="Previous screenshot"
-              onClick={() => setIndex((index - 1 + count) % count)}
-            >
-              <ArrowLeft size={18} />
-            </button>
-            <button
-              className="icon-button"
-              aria-label="Next screenshot"
-              onClick={() => setIndex((index + 1) % count)}
-            >
-              <ArrowRight size={18} />
-            </button>
-          </div>
-        )}
+        <div>
+          <a
+            className="icon-button"
+            href={screenshot.src}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Open full-size screenshot"
+            title="Open full-size screenshot"
+          >
+            <ExternalLink size={18} />
+          </a>
+          {count > 1 && (
+            <>
+              <button
+                className="icon-button"
+                aria-label="Previous screenshot"
+                onClick={() => setIndex((index - 1 + count) % count)}
+              >
+                <ArrowLeft size={18} />
+              </button>
+              <button
+                className="icon-button"
+                aria-label="Next screenshot"
+                onClick={() => setIndex((index + 1) % count)}
+              >
+                <ArrowRight size={18} />
+              </button>
+            </>
+          )}
+        </div>
       </figcaption>
     </figure>
   );

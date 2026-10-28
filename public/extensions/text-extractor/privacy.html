@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Text Extractor — Privacy</title>
+  <style>
+    :root { color-scheme: light; font: 16px/1.7 "Segoe UI", sans-serif; color: #203052; background: #f2f5fa; }
+    main { max-width: 640px; margin: 48px auto; padding: 24px; }
+    h1 { line-height: 1.2; } h2 { font-size: 20px; margin-top: 28px; } a { color: #2459db; }
+  </style>
+</head>
+<body><main>
+  <h1>Your words stay with you.</h1>
+  <p>Text Extractor privacy policy. Effective October 23, 2026.</p>
+  <p>Text Extractor is a local text capture tool. It has no account, analytics, advertising, remote fonts, or cloud recognition service. It does not upload captured text, screenshots, page titles, or source URLs. Additional recognition language data can be downloaded from jsDelivr as explained below.</p>
+  <h2>What the extension uses</h2>
+  <p>When you enable Pick an element and Ctrl+click, the extension reads the text you choose on the current website. It also records that page's title and source URL. URL credentials, query parameters, and fragments are removed. Titles and URL paths may still contain personal information; review them before including a source.</p>
+  <p>The element toggle stays on for the current page until you turn it off, press Esc, or navigate/reload. While on, it listens for Ctrl+click and pointer/key movement to highlight your target. Ordinary clicks are unaffected. Turning it off removes those listeners. It never reads the system clipboard or monitors your normal copy actions.</p>
+  <p>Copy element text is also available in Chrome's right-click menu, whether that toggle is on or off. A small script on HTTP(S) websites and matching frames remembers the element you right-click and draws a temporary border. Text is read only if you select our menu option. Temporary listeners dismiss the border on your next page interaction; they are then removed. The lightweight right-click listener remains active independently of the Ctrl+click picker. Chrome does not provide native-menu hover events.</p>
+  <h2>Text from images</h2>
+  <p>Capture selection takes a screenshot of the visible website after your explicit click. The snapshot includes everything visible in that viewport, potentially including private information or visible form contents. It opens in an extension workspace where you select an area to recognize. Only that selected area is processed by the local OCR engine. Nothing in the screenshot is uploaded.</p>
+  <p>The snapshot is temporarily staged in Chrome's in-memory extension session storage. The workspace removes that staged copy when it opens; closing a waiting workspace also removes its staged copy. The open workspace retains its snapshot and recognized result in memory until closed or reloaded. Clear in the popup removes the shared draft, not an already open workspace's image or result. Close that tab to discard those copies. No screenshot history is stored on disk by the extension.</p>
+  <p>Executable recognition code and English language data are bundled. Selecting another language downloads static traineddata from cdn.jsdelivr.net over HTTPS. The request identifies the language, and the CDN receives ordinary connection information such as your IP address. The request contains no screenshot, recognized text, page title, or source URL; credentials and referrer are omitted. The CDN's own logging policies apply. English does not require a network request to that service.</p>
+  <p>Up to six downloaded language packs are kept in extension Cache Storage for reuse and offline recognition, subject to browser eviction or storage limits. Clear downloaded languages removes them; bundled English remains available. Up to three selected language codes are saved as a local preference. These entries contain language identifiers and models, not captured images or text.</p>
+  <h2>Where your draft lives</h2>
+  <p>Only the latest draft is kept, in Chrome's in-memory extension session storage. It survives closing the popup. Clear removes it; another capture replaces it. Restarting Chrome, disabling, reloading, or updating the extension clears the session. Text is limited to 200,000 characters per capture. Content scripts cannot read saved drafts.</p>
+  <p>On first opening after an upgrade, a readable draft from the old version's selectedtext or selctedtext local-storage entries is imported if there is no current session draft. The current draft takes precedence. Old copies are removed only after the import succeeds or a current draft already exists. Export an imported draft before restarting Chrome. Clear also removes these old entries.</p>
+  <p>The Clean extra spaces and Include source preferences are saved in local extension storage on your device until changed or the extension is uninstalled. These entries contain only on/off settings, never captured text. They are not synced to other devices. Clear does not reset them.</p>
+  <h2>Copying and exporting</h2>
+  <p>Copy text writes to the system clipboard when you click it. Ctrl+click while element picking is on, or choosing Copy element text in Chrome's right-click menu, also copies the chosen element directly. Clean extra spaces applies to every copy and export when on; off preserves the captured spacing. Export creates a plain text file on your device. Include source adds the page title and cleaned source URL to any of these outputs. Clipboard managers, other apps with clipboard access, and your chosen file storage may retain these copies independently. Clear does not remove copies you have exported or copied.</p>
+  <h2>Permissions</h2>
+  <p>Website access to HTTP(S) pages allows the right-click target listener to run on regular websites and frames, including pages open when the extension is installed or updated. activeTab allows an explicit screenshot after opening the real toolbar popup. scripting injects the context listener into existing tabs and enables the user-invoked picker. contextMenus adds Copy element text to Chrome's native menu. clipboardWrite allows explicit copies; there is no clipboardRead permission. storage keeps your current draft and pending screenshot for the browser session, plus formatting and language preferences locally. The extension has no external messaging interface.</p>
+  <h2>Questions and changes</h2>
+  <p>The maintainer is Nitish. Report privacy questions through the <a href="https://github.com/NitishKumar078/Text-Extractor/issues" rel="noreferrer">project issue tracker</a>. Do not post private captured text. Future releases will update this policy if data handling changes.</p>
+</main></body>
+</html>
